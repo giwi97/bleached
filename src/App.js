@@ -1,12 +1,31 @@
-import React from 'react';
+import React, {useState} from 'react';
 const weatherapi = {
 
   key: "4fc99fa56dae5040518049ca5d5b2d7d",
-  base: "https://api.openweathermap.org/data/2.5"
+  base: "https://api.openweathermap.org/data/2.5/"
 
 }
 
 function App() {
+
+  const [query, setQuery] = useState('');
+  const [weather, setWeather] = useState({});
+
+  const search = evt => {
+
+    if(evt.key == "Enter"){
+
+      fetch(`${weatherapi.base}weather?q=${query}&units=metric&APPID=${weatherapi.key}`)
+        .then(res => res.json())
+        .then(result => {
+          setWeather(result);
+          setQuery('');
+          console.log(result);
+        });
+
+    }
+
+  }
 
   const dateBuilder = (d) => {
 
@@ -28,11 +47,22 @@ function App() {
     <div className="app">
       <main>
         <div className="search-box">
-          <input type="text" className="search-bar" placeholder="Search...." />
+          <input type="text" className="search-bar" 
+          placeholder="Search...." 
+          onChange={e => setQuery(e.target.value)}
+          value={query}
+          onKeyPress={search}
+          />
         </div>
         <div className="location-box">
           <div className="location">Colombo, SL</div>
           <div className="date">{dateBuilder(new Date())}</div>
+        </div>
+        <div className="weather-box">
+          <div className="temp">
+            27°c
+          </div>
+          <div className="weather">Sunny</div>
         </div>
       </main>
     </div>
